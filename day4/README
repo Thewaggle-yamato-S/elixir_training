@@ -1,0 +1,69 @@
+Section.1 map (https://hexdocs.pm/elixir/Map.html)
+    1.1 mapの定義
+        マップはデータ構造であり、次のように定義される。
+
+        %{}
+
+        ・要素数が32までは定義順に並ぶ。それ以降はランダム配置される。
+        ・要素のキーが全てアトムの場合、簡易記法で記述可能。
+            （例）
+                map = %{:name => "yamato", :age => 26}
+                map_easy = %{name: "yamato", age: 26}
+
+                iex> %{"hello" => "world", a: 1, b: 2}
+                %{:a => 1, :b => 2, "hello" => "world"} 
+    
+            以下はエラー
+                atomを用いた簡易記法と通常記法は混在できない
+                map_chaos = %{name: "yamato", :age => 26}
+                :の後ろはスペース
+                map_not_space = %{name:"yamato", age: 26}
+
+    1.2 mapの値取得
+        ・[]を用いた取得
+            a = %{“Yamada” => 21, “Suzuki” => 20, “Sato” => 23}
+            a["Sato"]
+            -> 23
+            で取得できる。
+            キーがない場合はnilを返す。
+
+            b = %{name: “Yamada”, age: 21}
+            b[:name]
+            -> "Yamada"
+
+        ・Map.getを用いた取得
+            Map.get/3 : get(map, key, default \\ nil)
+
+            a = %{“Yamada” => 21, “Suzuki” => 20, “Sato” => 23}
+            Map.get(a, "Sato")
+            や
+            Map.get(a, "Yamada")
+            と書ける。
+            キーが存在しなければ、nil
+        
+        ・「．」演算子を用いた取得
+            mapの要素がアトムのみの場合、
+            a = %{name: “Yamada”, age: 21}
+            a.name
+            でも"Yamada"を取得できる
+            キーが存在しない場合は、ERRORになる。
+    1.3 要素の追加・更新
+        ・Map.put
+            追加、更新が行える。
+        ・Map.put_new
+            追加が行える。
+            返り値は追加されたmap,キーが存在していた場合は追加されないのでmapがそのまま返る。
+        ・Map.replace
+            更新が行える。
+            返り値は更新されたmap,キーが存在していない場合は更新されないのでmapがそのまま返る。
+            (パイプを使っても更新できるがキーがない場合はエラー)
+
+
+        
+疑問点：
+    アトムの通常記法と簡易記法が混在していてもいける？？
+    順番が大事なのか？？
+    error: %{:name => "yamato", age: 26}
+    oK: %{name: "yamato", :age => 26}
+
+
