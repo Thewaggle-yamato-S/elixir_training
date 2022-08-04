@@ -37,9 +37,14 @@ defmodule SimpleCrawler do
     end)
   end
 
-  def main(url) do
-    url_list = [url] ++ SimpleCrawler.get_url_list([url])
-    get_page_text(url_list)
+  def check_url(url_list) do
+    all_url = url_list ++ SimpleCrawler.get_url_list(url_list)
+    |> Enum.uniq()
+    if all_url == url_list do
+      all_url
+    else
+      check_url(all_url)
+    end
   end
 
 end
@@ -47,8 +52,10 @@ end
 
 defmodule Main do
   def main do
-    SimpleCrawler.get_url("https://thewaggletraining.github.io/")
-    |> SimpleCrawler.get_url_list()
+    top_url = "https://thewaggletraining.github.io/"
+    url_list = [top_url] ++ SimpleCrawler.get_url_list([top_url])
+    |> SimpleCrawler.check_url()
     |> SimpleCrawler.get_page_text()
+
   end
 end
