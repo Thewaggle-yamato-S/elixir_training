@@ -12,10 +12,15 @@ defmodule CsvModule do
     value = Enum.map(value, &String.split(&1, ","))
     |> Enum.map(&Enum.into(Enum.zip(field, &1), %{}))
   end
-  def file_export(query) do
-    Csv.Repo.stream(query)
-    |> Csv.Repo.transaction(&(Enum.to_list(&1)))
-    #File.write("new_CUSTOMER.csv", data)
+  def file_export(data) do
+    #dataは構造体？なので全部に対してEnum.mapで処理をかける。
+    data = data
+    #|> Enum.map(&IO.puts(&1.customer_number))
+    |> Enum.map(& "\r\n#{&1.customer_number},#{&1.customer_name},#{&1.credit_score},#{&1.prefectures}")
+    data = ["取引先番号,取引先名称,与信スコア,都道府県"] ++ data
+    |> Enum.join()
+    File.open!("new_CUSTOMER.csv",[:write])
+    |> IO.binwrite(data)
   end
 end
 
@@ -24,7 +29,7 @@ defmodule Main do
     CsvModule.read_csv("CUSTOMER.csv")
     |> CsvModule.processing_csv()
     |> Enum.map(&(CsvModule.Customeres.insert(&1)))
-    query = CsvModule.Customeres.select_all()
+    data = CsvModule.Customeres.select_all()
     |> CsvModule.file_export()
   end
 end
